@@ -26,6 +26,13 @@ public class DiscenteController {
     }
 
     @PreAuthorize("hasRole('COLABORADOR')")
+    @PutMapping("/{id}/inativar")
+    public ResponseEntity<Void> inativar(@PathVariable Long id, @RequestBody String motivo) {
+        discenteService.inativar(id, motivo);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('COLABORADOR')")
     @GetMapping
     public ResponseEntity<List<DiscenteResponseDto>> buscarTodos() {
         return ResponseEntity.ok(discenteService.buscarTodos());

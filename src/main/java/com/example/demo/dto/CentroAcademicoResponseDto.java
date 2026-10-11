@@ -14,5 +14,6 @@ public record CentroAcademicoResponseDto(
         LocalDateTime dataCadastro,
         Long iesId,
         DocenteResumoDto coordenador,
+        List<DocenteResumoDto> docentes,
         List<CursoResumoDto> cursos) {
 }

@@ -131,8 +131,7 @@ public class CursoService {
     private CursoResponseDto converterParaDto(Curso curso) {
         DocenteResumoDto coordenador = new DocenteResumoDto(
                     curso.getCoordenador().getId(),
-                    curso.getCoordenador().getUsuario().getNome(),
-                    curso.getCoordenador().getMatricula());
+                    curso.getCoordenador().getUsuario().getNome());
 
         List<DisciplinaResumoDto> disciplinas = curso.getDisciplinas().stream().map(disciplina -> new DisciplinaResumoDto(disciplina.getId(),
                 disciplina.getSigla(),

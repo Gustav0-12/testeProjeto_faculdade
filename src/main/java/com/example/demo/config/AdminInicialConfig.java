@@ -26,6 +26,11 @@ public class AdminInicialConfig {
     CommandLineRunner criarAdminInicial() {
         return args -> {
 
+            for (TipoPerfil tipo : TipoPerfil.values()) {
+                roleRepository.findByTipoPerfil(tipo)
+                        .orElseGet(() -> roleRepository.save(new Roles(null, tipo)));
+            }
+
             if (usuarioRepository.existsByEmail("admin@monitoria.com")) {
                 return;
             }

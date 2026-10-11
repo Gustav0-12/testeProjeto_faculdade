@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.HistoricoResponseDto;
 import com.example.demo.model.Historico;
+import com.example.demo.model.Usuario;
 import com.example.demo.model.enums.TipoAcao;
 import com.example.demo.repository.HistoricoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,10 +26,23 @@ public class HistoricoService {
                 motivo,
                 entidadeId);
 
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        historico.setUsuarioResponsavel(usuario);
+
         historicoRepository.save(historico);
     }
 
-    public List<Historico> buscarTodos() {
-        return historicoRepository.findAll();
+    public List<HistoricoResponseDto> buscarTodos() {
+        return historicoRepository.findAll().stream()
+                .map(historico -> new HistoricoResponseDto(
+                        historico.getId(),
+                        historico.getTipoAcao(),
+                        historico.getEntidade(),
+                        historico.getEntidadeId(),
+                        historico.getMotivo(),
+                        historico.getDataHora(),
+                        historico.getUsuarioResponsavel().getNome(),
+                        historico.getUsuarioResponsavel().getEmail()))
+                .toList();
     }
 }

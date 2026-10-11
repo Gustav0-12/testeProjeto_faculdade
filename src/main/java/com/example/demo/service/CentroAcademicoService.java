@@ -152,9 +152,12 @@ public class CentroAcademicoService {
     private CentroAcademicoResponseDto converterParaDto(CentroAcademico ca) {
 
         DocenteResumoDto coordenador = null;
+
         if (ca.getCoordenador() != null) {
-            coordenador = new DocenteResumoDto(ca.getCoordenador().getId(), ca.getCoordenador().getUsuario().getNome(), ca.getCoordenador().getMatricula());
+            coordenador = new DocenteResumoDto(ca.getCoordenador().getId(), ca.getCoordenador().getUsuario().getNome());
         }
+
+        List<DocenteResumoDto> docentes = ca.getDocentes().stream().map(docente -> new DocenteResumoDto(docente.getId(), docente.getUsuario().getNome())).toList();
 
         List<CursoResumoDto> cursos = ca.getCursos().stream()
                 .map(curso -> new CursoResumoDto(
@@ -173,6 +176,7 @@ public class CentroAcademicoService {
                 ca.getDataCadastro(),
                 ca.getIes().getId(),
                 coordenador,
+                docentes,
                 cursos);
     }
 }

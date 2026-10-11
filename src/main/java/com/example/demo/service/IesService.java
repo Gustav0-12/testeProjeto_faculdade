@@ -123,9 +123,7 @@ public class IesService {
         if (ies.getReitor() != null) {
             reitor = new DocenteResumoDto(
                     ies.getReitor().getId(),
-                    ies.getReitor().getUsuario().getNome(),
-                    ies.getReitor().getMatricula()
-            );
+                    ies.getReitor().getUsuario().getNome());
         }
 
         List<CentroAcademicoResumoDto> centrosAcademicos = ies.getCentrosAcademicos().stream().map(ca -> new CentroAcademicoResumoDto(

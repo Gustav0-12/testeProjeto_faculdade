@@ -10,9 +10,9 @@ import com.example.demo.model.enums.TipoAcao;
 import com.example.demo.repository.CursoRepository;
 import com.example.demo.repository.DisciplinaRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,8 +28,10 @@ public class DisciplinaService {
     @Transactional
     public void criar(RegistrarDisciplinaDto dto) {
 
-        Curso curso = cursoRepository.findById(dto.cursoId())
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+        Curso curso = cursoRepository.findById(dto.cursoId()).orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+        if (curso.getStatus().equals(Status.INATIVO)) {
+            throw new RuntimeException("Não é possível associar uma disciplina a um curso inativo.");
+        }
 
         Disciplina disciplina = new Disciplina();
 
@@ -48,8 +50,14 @@ public class DisciplinaService {
     public void editar(Long disciplinaId, AtualizarDisciplinaDto dto) {
 
         Disciplina disciplina = disciplinaRepository.findById(disciplinaId).orElseThrow(() -> new EntityNotFoundException("Disciplina não encontrada."));
+        if (disciplina.getStatus().equals(Status.INATIVO)) {
+            throw new RuntimeException("Não é possível editar disciplinas inativas");
+        }
 
         Curso curso = cursoRepository.findById(dto.cursoId()).orElseThrow(() -> new EntityNotFoundException("Curso não encontrado."));
+        if (curso.getStatus().equals(Status.INATIVO)) {
+            throw new RuntimeException("Não é possível associar uma disciplina a um curso inativo.");
+        }
 
         disciplina.setSigla(dto.sigla());
         disciplina.setDescricao(dto.descricao());
@@ -77,6 +85,7 @@ public class DisciplinaService {
         historicoService.registrar(TipoAcao.INATIVACAO, LocalDateTime.now(), "DISCIPLINA", motivo, disciplina.getId());
     }
 
+    @Transactional(readOnly = true)
     public List<DisciplinaResponseDto> buscarTodos() {
         return disciplinaRepository.findAll()
                 .stream()
@@ -84,6 +93,7 @@ public class DisciplinaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public DisciplinaResponseDto buscarPorId(Long id) {
         Disciplina disciplina = disciplinaRepository.findById(id).orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
         return converterParaDto(disciplina);

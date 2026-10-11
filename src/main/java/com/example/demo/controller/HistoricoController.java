@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.HistoricoResponseDto;
 import com.example.demo.model.Historico;
 import com.example.demo.service.HistoricoService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class HistoricoController {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
-    public ResponseEntity<List<Historico>> buscarTodos() {
-        List<Historico> historicos = historicoService.buscarTodos();
+    public ResponseEntity<List<HistoricoResponseDto>> buscarTodos() {
+        List<HistoricoResponseDto> historicos = historicoService.buscarTodos();
         return ResponseEntity.ok(historicos);
     }
 }

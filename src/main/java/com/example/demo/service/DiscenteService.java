@@ -2,10 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.dto.DiscenteResponseDto;
 import com.example.demo.dto.RegistrarDiscenteDto;
-import com.example.demo.model.Curso;
-import com.example.demo.model.Discente;
-import com.example.demo.model.Roles;
-import com.example.demo.model.Usuario;
+import com.example.demo.model.*;
+import com.example.demo.model.enums.Status;
 import com.example.demo.model.enums.TipoAcao;
 import com.example.demo.model.enums.TipoPerfil;
 import com.example.demo.repository.CursoRepository;
@@ -65,6 +63,22 @@ public class DiscenteService {
         discenteRepository.save(discente);
 
         historicoService.registrar(TipoAcao.CADASTRO, LocalDateTime.now(), "DISCENTE", "Criação de novo discente", discente.getId());
+    }
+
+    public void inativar(Long discenteId, String motivo) {
+        Discente discente = discenteRepository.findById(discenteId).orElseThrow(() -> new RuntimeException("Docente não encontrado."));
+
+        if (discente.getStatus() == Status.INATIVO) {
+            throw new RuntimeException(
+                    "O docente já está inativo."
+            );
+        }
+
+        discente.setStatus(Status.INATIVO);
+
+        discenteRepository.save(discente);
+
+        historicoService.registrar(TipoAcao.INATIVACAO, LocalDateTime.now(), "DISCENTE", motivo, discente.getId());
     }
 
     @Transactional(readOnly = true)

@@ -17,6 +17,10 @@ public class Historico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "responsavel_id")
+    private Usuario usuarioResponsavel;
+
     @Enumerated(EnumType.STRING)
     private TipoAcao tipoAcao;
 
